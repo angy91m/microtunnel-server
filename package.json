@@ -1,0 +1,26 @@
+{
+  "name": "microtunnel-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cred-generate": "node microtunnel-client.js cred-generate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angy91m/microtunnel-server.git"
+  },
+  "author": "angy91m",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/angy91m/microtunnel-server/issues"
+  },
+  "homepage": "https://github.com/angy91m/microtunnel-server#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "kyber-crystals": "^1.0.4",
+    "supersphincs": "^8.0.2",
+    "symcryptor": "^1.0.1"
+  }
+}
