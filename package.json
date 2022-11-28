@@ -1,7 +1,7 @@
 {
   "name": "microtunnel-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "NodeJS library for post-quantum communication between apps",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,6 +11,23 @@
     "type": "git",
     "url": "git+https://github.com/angy91m/microtunnel-server.git"
   },
+  "keywords": [
+    "cryptography",
+    "crypto",
+    "post-quantum",
+    "kyber",
+    "kyber-crystals",
+    "crystals-kyber",
+    "sphincs",
+    "supersphincs",
+    "aes",
+    "aes-256-ctr",
+    "sha3",
+    "keccak",
+    "kmac",
+    "express",
+    "symcryptor"
+  ],
   "author": "angy91m",
   "license": "GPL-3.0-or-later",
   "bugs": {
