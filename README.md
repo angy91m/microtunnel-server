@@ -93,7 +93,7 @@ app.listen( 3000, '0.0.0.0' );
 
 * `app` Required - An Express app/router instance
 * `options` Optional - An object containing custom configuration:
-  * `api` Optional - Root route for microtunnel (note: must be the same for clients) - Default `'/microtunnel'`
+  * `api` Optional - Root path for microtunnel (note: must be the same for clients) - Default `'/microtunnel'`
   * `resetMinutes` Optional - Max duration for any session in minutes - Default `15`
   * `appCredFile` Optional - Relative path of the credentials file - Default: enviroment var `APP_CRED`
   * `authClientsFile` Optional - Relative path of the autherized clients file - Default: enviroment var `AUTH_CLTS`
@@ -126,3 +126,4 @@ app.authPost( clientName: String | Array | true, route: String, callback: Functi
 * Both `res.send` and `res.json` will decrypt data sent to clients but `microtunnel-client` auto-parses from JSON so use `res.json`
 * Since every communication is encrypted you can call `res.json` once for each request
 * `app.use` will not affect microtunnel routes
+* The POST routes `/microtunnel/auth1` and `/microtunnel/auth2` are reserved (these change will change if you changed default root microtunnel path)
