@@ -126,4 +126,4 @@ app.authPost( clientName: String | Array | true, route: String, callback: Functi
 * Both `res.send` and `res.json` will decrypt data sent to clients but `microtunnel-client` auto-parses from JSON so use `res.json`
 * Since every communication is encrypted you can call `res.json` once for each request
 * `app.use` will not affect microtunnel routes
-* The POST routes `/microtunnel/auth1` and `/microtunnel/auth2` are reserved (these change will change if you changed default root microtunnel path)
+* The POST routes `/microtunnel/auth1` and `/microtunnel/auth2` are reserved (these will change if you changed default root microtunnel path)
