@@ -1,8 +1,9 @@
 {
   "name": "microtunnel-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NodeJS library for post-quantum communication between apps",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "cred-generate": "node microtunnel-client.js cred-generate"
@@ -38,6 +39,6 @@
     "express": "^4.18.2",
     "kyber-crystals": "^1.0.4",
     "supersphincs": "^8.0.2",
-    "symcryptor": "^1.0.1"
+    "symcryptor": "^1.0.2"
   }
 }
