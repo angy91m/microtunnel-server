@@ -1,12 +1,12 @@
 {
   "name": "microtunnel-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "NodeJS library for post-quantum communication between apps",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cred-generate": "node microtunnel-client.js cred-generate"
+    "cred-generate": "node index.js cred-generate"
   },
   "repository": {
     "type": "git",
