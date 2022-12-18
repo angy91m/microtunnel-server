@@ -1,7 +1,8 @@
 "use strict";
 const { superSphincs } = require( 'supersphincs' ),
     { kyber } = require( 'kyber-crystals' ),
-    symCryptor = require( 'symcryptor' );
+    symCryptor = require( 'symcryptor' ),
+    { encode: cbEncode, decode: cbDecode} = require( 'cbor-x' );
 
 if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
     Promise.all( [
@@ -232,7 +233,7 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
                 const origSend = res.send;
                 res.send = async function ( obj ) {
                     try {
-                        const encrypted = await symCryptor.encrypt( Buffer.from( obj ), clt.key, clt.shaKey, appCred.agent );
+                        const encrypted = await symCryptor.encrypt( cbEncode( obj ), clt.key, clt.shaKey, appCred.agent );
                         origSend.call( this, encrypted );
                         res.end();
                     } catch {
@@ -240,13 +241,16 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
                         res.end();
                     }
                 };
+                res.json = async ( obj ) => {
+                    await res.send( obj );
+                }
                 res.set( {
                     'Content-Type': 'application/octet-stream'
                 } );
                 if ( !parseBody ) return next();
                 symCryptor.decrypt( req.body, clt.key, clt.shaKey, clt.agent )
                 .then( async decBody => {
-                    req.body = JSON.parse( decBody.toString( 'utf8' ) );
+                    req.body = cbDecode( decBody );
                     next();
                 } )
                 .catch( () => sendError.call( res ) );

@@ -1,6 +1,6 @@
 {
   "name": "microtunnel-server",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "NodeJS library for post-quantum communication between apps",
   "main": "index.js",
   "types": "index.d.ts",
@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/angy91m/microtunnel-server#readme",
   "dependencies": {
+    "cbor-x": "^1.4.1",
     "express": "^4.18.2",
     "kyber-crystals": "^1.0.4",
     "supersphincs": "^8.0.2",
