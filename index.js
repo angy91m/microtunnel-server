@@ -125,8 +125,8 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
             this.status( 404 );
             this.send();
         };
-        const sessions = new AuthServerSessions( require( './' + authClientsFile ) );
-        const appCred = require( './' + appCredFile );
+        const sessions = new AuthServerSessions( require( authClientsFile ) );
+        const appCred = require( appCredFile );
         const unless = ( middleware ) => {
             return ( req, res, next ) => {
                 if ( req.originalUrl.startsWith( api + '/' ) ) {
