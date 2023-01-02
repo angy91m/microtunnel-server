@@ -39,16 +39,23 @@ Then you have to create a JSON file containing clients info. In this example we 
         // Supersphincs public key of the client base-64 encoded
         "publicKey": "VvYTfCAhiEDW3abLLhO2ane27HMivnNSLjfKxd4jnOiGCOW0UEXjjacgoZrn/BPvNv+bmerLr0HB+71X2+Eh5NXH2JO6kAoM+SCQblUk3gDyqRbVbYkg/RSCl/6oe0wY"
     },
-    "sessions": {
-        // Client IP
-        "ip": ["192.168.0.3", "2001:0db8:85a3:0000:0000:8a2e:0370:7334"],
+    "sessions": [
+        {
+            // Client IP
+            "ip": "192.168.0.3",
 
-        // The Agent ID of the App
-        "agent": "vwoA1JzkT6d7SXjIBoZ2egYlSn6Ajzge",
+            // The Agent ID of the App
+            "agent": "vwoA1JzkT6d7SXjIBoZ2egYlSn6Ajzge",
 
-        // Supersphincs public key of the client base-64 encoded
-        "publicKey": "rPyoqSZrNNUVpjKdhGLDD4sjXd8lgIgnRBY2NP5n8PDDLSvoLoD5n4GjaxbAfSDjagBjN8zztUQTNG1EKO9IgpgTLkfkTkhWqdgkC/K3EQLh6AMCZ8snlnles2QrbHAy"
-    }
+            // Supersphincs public key of the client base-64 encoded
+            "publicKey": "rPyoqSZrNNUVpjKdhGLDD4sjXd8lgIgnRBY2NP5n8PDDLSvoLoD5n4GjaxbAfSDjagBjN8zztUQTNG1EKO9IgpgTLkfkTkhWqdgkC/K3EQLh6AMCZ8snlnles2QrbHAy"
+        },
+        {
+            "ip": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+            "agent": "z1Wprk1s6BCuP0hYz1b9pWTcV26IF9xG",
+            "publicKey": "Zs8jcZlLAAPN/UxmErQ+XfYJ9R2GpL7YIv25lMGTwu3/jjmOzdITcWb2YZTntxWBJBJXzNOcXNWpRJRKAUi4/imJtj88jH03EcW7tq0FiVTeZTSxRBWiGAinouFrtVzf"
+        }
+    ]
 }
 ```
 

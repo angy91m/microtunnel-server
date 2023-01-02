@@ -1,6 +1,6 @@
 {
   "name": "microtunnel-server",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "NodeJS library for post-quantum communication between apps",
   "main": "index.js",
   "types": "index.d.ts",

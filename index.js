@@ -39,14 +39,14 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
         };
         const { api, resetMinutes, appCredFile, authClientsFile } = defaultOptions;
         class AuthServerSex {
-            constructor( name, ip, agent, signature ) {
+            constructor( name, clts ) {
                 this.name = name;
-                if ( typeof ip === 'string' ) ip = [ip];
-                this.clients = ip.map( i => ( {
+                if ( clts.constructor !== Array ) clts = [clts];
+                this.clients = clts.map( c => ( {
                     name,
-                    ip: i,
-                    agent,
-                    signature,
+                    ip: c.ip,
+                    agent: c.agent,
+                    signature: Buffer.from( c.publicKey, 'base64' ),
                     state: 0,
                     key: undefined,
                     shaKey: undefined,
@@ -76,7 +76,7 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
             constructor( authClients ) {
                 const clients = [];
                 for ( const clt in authClients ) {
-                    clients.push( new AuthServerSex( clt, authClients[clt].ip, authClients[clt].agent, Buffer.from( authClients[clt].publicKey, 'base64' ) ) );
+                    clients.push( new AuthServerSex( clt, authClients[clt] ) );
                 }
                 super( ...clients );
             }
