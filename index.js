@@ -47,20 +47,30 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
                     ip: c.ip,
                     agent: c.agent,
                     signature: Buffer.from( c.publicKey, 'base64' ),
+                    decrypting: 0,
                     state: 0,
                     key: undefined,
                     shaKey: undefined,
-                    timer: setInterval( () => {
-                        this.delete();
-                    }, resetMinutes * 60000 ),
+                    pendingReset: false,
+                    beginDecrypt() {
+                        this.decrypting = this.decrypting + 1;
+                    },
+                    endDecrypt() {
+                        this.decrypting = this.decrypting - 1;
+                        if ( this.decrypting === 0 && this.pendingReset ) {
+                            this.reset();
+                        }
+                    },
                     delete() {
                         this.state = 0;
                         this.key = undefined;
                         this.shaKey = undefined;
+                        this.pendingReset = false;
                     },
                     resetTimer() {
-                        clearInterval( this.timer );
-                        this.timer = setInterval( () => {
+                        clearTimeout( this.timer );
+                        this.timer = setTimeout( () => {
+                            if ( this.decrypting ) return this.pendingReset = true;
                             this.delete();
                         }, resetMinutes * 60000 );
                     },
@@ -201,7 +211,7 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
         } );
 
         const clientParser = ( clts, parseBody = false ) => {
-            return ( req, res, next ) => {
+            return async ( req, res, next ) => {
                 const ip = req.ip;
                 const agent = req.get( 'User-Agent' );
                 if ( !ip || !agent ) return sendError.call( res );
@@ -214,11 +224,30 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
                     }
                 }
                 if ( !clt ) return sendError.call( res );
-                req.tunnelClt = clt;
+                const cltClone = {
+                    name: clt.name,
+                    ip: clt.ip,
+                    agent: clt.agent,
+                    signature: clt.signature,
+                    state: clt.state,
+                    key: Buffer.from( clt.key ),
+                    shaKey: Buffer.from( clt.shaKey ),
+                    timer: clt.timer,
+                    delete() {
+                        clt.delete();
+                    },
+                    resetTimer() {
+                        clt.resetTimer();
+                    },
+                    reset() {
+                        clt.reset();
+                    }
+                };
+                req.tunnelClt = cltClone;
                 const origSend = res.send;
                 res.send = async function ( obj ) {
                     try {
-                        const encrypted = await symCryptor.encrypt( cbEncode( obj ), clt.key, clt.shaKey, appCred.agent );
+                        const encrypted = await symCryptor.encrypt( cbEncode( obj ), cltClone.key, cltClone.shaKey, appCred.agent );
                         origSend.call( this, encrypted );
                         res.end();
                     } catch {
@@ -233,12 +262,19 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
                     'Content-Type': 'application/octet-stream'
                 } );
                 if ( !parseBody ) return next();
-                symCryptor.decrypt( req.body, clt.key, clt.shaKey, clt.agent )
-                .then( async decBody => {
+                while ( clt.pendingReset ) {
+                    await new Promise( r => setTimeout( r, 200 ) );
+                }
+                clt.beginDecrypt();
+                try {
+                    const decBody = await symCryptor.decrypt( req.body, cltClone.key, cltClone.shaKey, cltClone.agent );
                     req.body = cbDecode( decBody );
                     next();
-                } )
-                .catch( () => sendError.call( res ) );
+                } catch {
+                    sendError.call( res );
+                } finally {
+                    clt.endDecrypt();
+                }
             };
         };
         const addAppCltRoute = ( cltNames, method, route = '/', ...callbacks ) => {
