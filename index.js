@@ -41,42 +41,34 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
         class AuthServerSex {
             constructor( name, ip, agent, signature ) {
                 this.name = name;
-                this.ip = ip;
-                this.agent = agent;
-                this.signature = signature;
-                this.state = 0;
-                this.key = undefined;
-                this.shaKey = undefined;
-                this.timer = setInterval( () => {
-                    this.delete();
-                }, resetMinutes * 60000 );
-            }
-            delete() {
-                this.state = 0;
-                this.key = undefined;
-                this.shaKey = undefined;
-            }
-            extract() {
-                const obj = {
-                    name: this.name,
-                    ip: this.ip,
-                    agent: this.agent,
-                    signature: this.signature,
-                    state: this.state,
-                    key: this.key,
-                    shaKey: this.shaKey
-                };
-                return obj;
-            }
-            resetTimer() {
-                clearInterval( this.timer );
-                this.timer = setInterval( () => {
-                    this.delete();
-                }, resetMinutes * 60000 );
-            }
-            reset() {
-                this.resetTimer();
-                this.delete();
+                if ( typeof ip === 'string' ) ip = [ip];
+                this.clients = ip.map( i => ( {
+                    name,
+                    ip: i,
+                    agent,
+                    signature,
+                    state: 0,
+                    key: undefined,
+                    shaKey: undefined,
+                    timer: setInterval( () => {
+                        this.delete();
+                    }, resetMinutes * 60000 ),
+                    delete() {
+                        this.state = 0;
+                        this.key = undefined;
+                        this.shaKey = undefined;
+                    },
+                    resetTimer() {
+                        clearInterval( this.timer );
+                        this.timer = setInterval( () => {
+                            this.delete();
+                        }, resetMinutes * 60000 );
+                    },
+                    reset() {
+                        this.resetTimer();
+                        this.delete();
+                    }
+                } ) );
             }
         }
     
@@ -94,29 +86,19 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
                 if ( found ) return found;
                 return false;
             }
-            extract( str ) {
-                const found = this.get( str );
-                if ( !found ) return found;
-                return found.extract();
-            }
-            resetTimer( str ) {
-                const found = this.get( str );
-                if ( !found ) return found;
-                return found.resetTimer();
-            }
-            reset( str ) {
-                const found = this.get( str );
-                if ( !found ) return found;
-                return found.reset();
-            }
             findSrv( ip, agent ) {
                 if (
                     ( !ip || typeof ip !== 'string' )
                     || ( !agent || typeof agent !== 'string' )
                 ) return false;
-                const found = this.find( el => {
-                    return ( el.ip === ip && el.agent === agent ) ? true : false;
-                } );
+                let found = false;
+                for ( let i = 0; i < this.length; i++ ) {
+                    const clt = this[i].clients.find( c => c.ip === ip && c.agent === agent );
+                    if ( clt ) {
+                        found = clt;
+                        break;
+                    }
+                }
                 if ( found ) return found;
                 return false;
             }
@@ -223,11 +205,14 @@ if ( process.argv[1] === __filename && process.argv[2] === 'cred-generate' ) {
                 const ip = req.ip;
                 const agent = req.get( 'User-Agent' );
                 if ( !ip || !agent ) return sendError.call( res );
-                const clt = clts.find( el => 
-                    el.ip === ip
-                    && el.agent === agent
-                    && el.state === 2
-                );
+                let clt;
+                for ( let i = 0; i < clts.length; i++ ) {
+                    const found = clts[i].clients.find( c => c.ip === ip && c.agent === agent && c.state === 2 );
+                    if ( found ) {
+                        clt = found;
+                        break;
+                    }
+                }
                 if ( !clt ) return sendError.call( res );
                 req.tunnelClt = clt;
                 const origSend = res.send;

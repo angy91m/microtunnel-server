@@ -41,7 +41,7 @@ Then you have to create a JSON file containing clients info. In this example we 
     },
     "sessions": {
         // Client IP
-        "ip": "192.168.0.3",
+        "ip": ["192.168.0.3", "2001:0db8:85a3:0000:0000:8a2e:0370:7334"],
 
         // The Agent ID of the App
         "agent": "vwoA1JzkT6d7SXjIBoZ2egYlSn6Ajzge",
